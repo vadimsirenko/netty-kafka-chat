@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.vasire.netty.kafka.chat.server.websocket.WebSocketServerHandler;
-import ru.vasire.netty.kafka.chat.server.websocket.dto.ClientDto;
+import ru.vasire.netty.kafka.chat.server.websocket.dto.request.ClientDto;
 import ru.vasire.netty.kafka.chat.server.websocket.entity.Client;
 
 import java.nio.charset.StandardCharsets;
@@ -26,8 +25,8 @@ public final class ClientService {
 
             if (clientDto.getName() != null)
                 client.setName(clientDto.getName());
-            if (clientDto.getChatId() != null)
-                client.setChatId(clientDto.getChatId());
+            if (clientDto.getRoomId() != null)
+                client.setRoomId(clientDto.getRoomId());
             return client;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

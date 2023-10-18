@@ -3,9 +3,9 @@ package ru.vasire.netty.kafka.chat.server.websocket.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum MessageType {
-    @JsonProperty("CHAT_MESSAGE")
+    @JsonProperty("MESSAGE")
     CHAT_MESSAGE,
-    @JsonProperty("CHAT")
+    @JsonProperty("ROOM")
     CHAT,
     @JsonProperty("CLIENT")
     CLIENT

@@ -8,5 +8,5 @@ import lombok.Setter;
 public class Client {
     private long id;
     private String name;
-    private long chatId;
+    private long roomId;
 }

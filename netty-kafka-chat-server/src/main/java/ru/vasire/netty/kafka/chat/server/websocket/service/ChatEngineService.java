@@ -20,30 +20,30 @@ public class ChatEngineService {
 
     public static void addClient(Client client, Channel channel){
         // If it does not exist in the room list, it is the channel, then add a channel ChannelGroup
-        if (!CHANNEL_GROUP_MAP.containsKey(client.getChatId())) {
-            CHANNEL_GROUP_MAP.put(client.getChatId(), new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
+        if (!CHANNEL_GROUP_MAP.containsKey(client.getRoomId())) {
+            CHANNEL_GROUP_MAP.put(client.getRoomId(), new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
         }
 
         // Make sure there is a room number before adding the message to the channel
-        CHANNEL_GROUP_MAP.get(client.getChatId()).add(new ChatChannel(newClientIndex, channel));
+        CHANNEL_GROUP_MAP.get(client.getRoomId()).add(new ChatChannel(newClientIndex, channel));
         client.setId(newClientIndex);
         CHAT_USERS.put(newClientIndex, client.getName());
         newClientIndex++;
     }
 
     public static void removeClient(Client client, Channel channel){
-        if (client != null && CHANNEL_GROUP_MAP.containsKey(client.getChatId())) {
-            CHANNEL_GROUP_MAP.get(client.getChatId()).remove(channel);
+        if (client != null && CHANNEL_GROUP_MAP.containsKey(client.getRoomId())) {
+            CHANNEL_GROUP_MAP.get(client.getRoomId()).remove(channel);
             CHAT_USERS.remove(client.getName());
         }
     }
 
     public static Set<Channel> getChannelToSendMessage(Client client, Message message){
-        if (CHANNEL_GROUP_MAP.containsKey(client.getChatId())) {
+        if (CHANNEL_GROUP_MAP.containsKey(client.getRoomId())) {
             if (message.getRecipientId() != 0) {
-                return CHANNEL_GROUP_MAP.get(client.getChatId());
+                return CHANNEL_GROUP_MAP.get(client.getRoomId());
             } else {
-                return CHANNEL_GROUP_MAP.get(client.getChatId()).stream().filter(c -> ((ChatChannel) c).getClientId() == client.getId() ||  ((ChatChannel) c).getClientId() == message.getRecipientId()).collect(Collectors.toSet());
+                return CHANNEL_GROUP_MAP.get(client.getRoomId()).stream().filter(c -> ((ChatChannel) c).getClientId() == client.getId() || ((ChatChannel) c).getClientId().equals(message.getRecipientId())).collect(Collectors.toSet());
             }
         }
         return new HashSet<>();

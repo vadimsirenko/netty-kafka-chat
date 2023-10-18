@@ -47,9 +47,9 @@ public class HttpProcessorService {
 
         Client client = ClientService.clientRegister(requestParams.get(HTTP_PARAM_REQUEST).get(0));
 
-        if (client.getChatId() == 0) {
-            System.err.println("Chat is not default");
-            sendHttpResponse(ctx, request, new DefaultFullHttpResponse(HTTP_1_1, NOT_FOUND), "Chat is not assign");
+        if (client.getRoomId() == 0) {
+            System.err.println("Room is not default");
+            sendHttpResponse(ctx, request, new DefaultFullHttpResponse(HTTP_1_1, NOT_FOUND), "Room is not assign");
             return null;
         }
 

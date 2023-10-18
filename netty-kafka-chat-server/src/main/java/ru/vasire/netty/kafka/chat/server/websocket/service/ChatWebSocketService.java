@@ -6,7 +6,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.websocketx.*;
-import ru.vasire.netty.kafka.chat.server.websocket.dto.ResponseDto;
+import ru.vasire.netty.kafka.chat.server.websocket.dto.response.ResponseDto;
 import ru.vasire.netty.kafka.chat.server.websocket.entity.Client;
 import ru.vasire.netty.kafka.chat.server.websocket.entity.Message;
 

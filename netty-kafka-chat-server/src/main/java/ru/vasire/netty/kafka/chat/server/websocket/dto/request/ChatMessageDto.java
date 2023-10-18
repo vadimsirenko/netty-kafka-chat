@@ -1,4 +1,4 @@
-package ru.vasire.netty.kafka.chat.server.websocket.dto;
+package ru.vasire.netty.kafka.chat.server.websocket.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

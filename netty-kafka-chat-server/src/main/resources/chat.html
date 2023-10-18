@@ -1,99 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title>Sppcode Live Chat Tutorial</title>
-    <meta name="description" content="Tuts+ Chat Application" />
-    <link rel="stylesheet" href="style.css" />
-    <script src="./base64.js"></script>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8" />
+  <title>Sppcode Live Chat Tutorial</title>
+  <meta name="description" content="Tuts+ Chat Application" />
+  <link href="css/font-awesome.min.css" rel="stylesheet" />
+  <link href="css/reset.min.css" rel="stylesheet"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
-<script type="text/javascript">
-    var login;
-    function Username() {
-        var username = window.prompt("Enter your username:", "");
-
-        if (username.toString().length > 2) {
-            login = username;
-        }
-        else {
-            alert("Your username must be at least two characters.");
-            Username();
-        }
-    }
-
-    var socket;
-    Username();
-    if (!window.WebSocket) {
-        window.WebSocket = window.MozWebSocket;
-    }
-    if (window.WebSocket) {
-
-        let config = { "name": login,
-            "chat_id":78, "token": "dfgfdsgfdsgfdsgfdsgfdsg"
-        }
-        let configJSON = JSON.stringify(config);
-        // Encode the String
-        var encodedString = Base64.encode(configJSON);
-
-        //socket = new WebSocket("ws://localhost:8181/websocket/?request=eyJpZCI6MzQsICJuYW1lIjoidmFkaW0iLCAiY2hhdF9pZCI6NzgsICJ0b2tlbiI6ICJkZmdmZHNnZmRzZ2Zkc2dmZHNnZmRzZyJ9");
-        socket = new WebSocket("ws://localhost:8181/websocket/?request="+encodedString);
-        socket.onmessage = function (event) {
-            console.log(event.data);
-            let data = JSON.parse(event.data);
-            date = new Date(data.data.ts);
-            if(data.data.recipient === "") {
-                document.getElementById("chatbox").innerText += "\n" + data.data.sender + ": " + data.data.message + " " + date.toLocaleString('ru-RU');
-            } else if(data.data.sender === login || data.data.recipient === login){
-                document.getElementById("chatbox").innerText += "\n" + data.data.sender + " для " + data.data.recipient + ": " + data.data.message + " " + date.toLocaleString('ru-RU');
-            }
-        };
-        socket.onopen = function (event) {
-            document.getElementById("welcome").innerHTML = 'Добро пожаловать, <b>'+ login + '</b>. Вы находитсь в чате: <b>Главный чат</b>';
-            console.log("websocket opened");
-        };
-        socket.onclose = function (event) {
-            console.log("websocket closed");
-        };
-    }
-
-    function send(messageText) {
-        if (!window.WebSocket || document.getElementById("messageText").value === "") {
-            return;
-        }
-        if (socket.readyState === WebSocket.OPEN) {
-
-            let message = {
-                "messageType": "CHAT_MESSAGE",
-                "operationType":"CREATE",
-                "recipient_id": document.getElementById("recipient").value,
-                "messageText": messageText,
-            };
-
-            let messageJSON = JSON.stringify(message);
-            //console.log(messageJSON);
-
-            socket.send(messageJSON);
-            document.getElementById("messageText").value = "";
-        } else {
-            alert("The socket is not open.");
-        }
-    }
-</script>
-<div id="wrapper">
-    <div id="menu">
-        <p class="welcome" id="welcome"></p>
-        <p class="logout"><a id="exit" href="#">Выйти</a></p>
+<div class="container clearfix">
+  <div class="people-list" id="people-list">
+    <div class="search">
+      <input type="text" placeholder="search" />
+      <i class="fa fa-search"></i>
     </div>
-    <div id="chatbox"></div>
-    <form name="message" action="">
-        <input name="chat_id" type="hidden" id="chat_id" value="48" />
-        <input name="recipient" type="text" id="recipient" />
-        <input name="messageText" type="text" id="messageText" />
-        <input name="submitmsg" type="button" id="submitmsg" value="Отправить" onclick="send(this.form.messageText.value)" />
-    </form>
+    <ul class="list">
+      <li class="clearfix">
+        <img src="img/avatar-small.jpg" alt="avatar">
+        <div class="about">
+          <div class="name">Vincent Porter</div>
+          <div class="status">
+            <i class="fa fa-circle online"></i> online
+          </div>
+        </div>
+      </li>
+
+      <li class="clearfix">
+        <img src="img/avatar-small.jpg" alt="avatar">
+        <div class="about">
+          <div class="name">Aiden Chavez</div>
+          <div class="status">
+            <i class="fa fa-circle offline"></i> left 7 mins ago
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="chat">
+    <div class="chat-header clearfix">
+      <img src="img/avatar-small.jpg" alt="avatar">
+
+      <div class="chat-about">
+        <div class="chat-with">Chat with Vincent Porter</div>
+        <div class="chat-num-messages">already 1 902 messages</div>
+      </div>
+      <i class="fa fa-star"></i>
+    </div> <!-- end chat-header -->
+
+    <div class="chat-history">
+      <ul>
+        <li class="clearfix">
+          <div class="message-data align-right">
+            <span class="message-data-time">10:10 AM, Today</span> &nbsp; &nbsp;
+            <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>
+
+          </div>
+          <div class="message other-message float-right">
+            Hi Vincent, how are you? How is the project coming along?
+          </div>
+        </li>
+
+        <li>
+          <div class="message-data">
+            <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
+            <span class="message-data-time">10:12 AM, Today</span>
+          </div>
+          <div class="message my-message">
+            Are we meeting today? Project has been already finished and I have results to show you.
+          </div>
+        </li>
+
+        <li class="clearfix">
+          <div class="message-data align-right">
+            <span class="message-data-time">10:14 AM, Today</span> &nbsp; &nbsp;
+            <span class="message-data-name">Olia</span> <i class="fa fa-circle me"></i>
+
+          </div>
+          <div class="message other-message float-right">
+            Well I am not sure. The rest of the team is not here yet. Maybe in an hour or so? Have you faced any problems at the last phase of the project?
+          </div>
+        </li>
+
+        <li>
+          <div class="message-data">
+            <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
+            <span class="message-data-time">10:20 AM, Today</span>
+          </div>
+          <div class="message my-message">
+            Actually everything was fine. I'm very excited to show this to our team.
+          </div>
+        </li>
+
+        <li>
+          <div class="message-data">
+            <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
+            <span class="message-data-time">10:31 AM, Today</span>
+          </div>
+          <i class="fa fa-circle online"></i>
+          <i class="fa fa-circle online" style="color: #AED2A6"></i>
+          <i class="fa fa-circle online" style="color:#DAE9DA"></i>
+        </li>
+
+      </ul>
+
+    </div> <!-- end chat-history -->
+
+    <div class="chat-message clearfix">
+      <textarea name="message-to-send" id="message-to-send" placeholder="Type your message" rows="3"></textarea>
+
+      <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
+      <i class="fa fa-file-image-o"></i>
+
+      <button>Send</button>
+
+    </div> <!-- end chat-message -->
+
+  </div> <!-- end chat -->
+
 </div>
+
+<script id="message-template" type="text/x-handlebars-template">
+  <li class="clearfix">
+    <div class="message-data align-right">
+      <span class="message-data-time" >{{time}}, Сегодня</span> &nbsp; &nbsp;
+      <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
+    </div>
+    <div class="message other-message float-right">
+      {{messageOutput}}
+    </div>
+  </li>
+</script>
+
+<script id="message-response-template" type="text/x-handlebars-template">
+  <li>
+    <div class="message-data">
+      <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
+      <span class="message-data-time">{{time}}, Сегодня</span>
+    </div>
+    <div class="message my-message">
+      {{response}}
+    </div>
+  </li>
+</script>
+<script src="js/base64.js"></script>
+<script src="js/jquery-3.7.1.min.js"></script>
+<script src="js/handlebars.min.js"></script>
+<script src="js/list.min.js"></script>
+<script src="js/script.js"></script>
 
 </body>
 </html>
