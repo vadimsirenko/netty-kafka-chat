@@ -1,0 +1,42 @@
+<html>
+<head lang="zh-cn">
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    var socket;
+    if (!window.WebSocket) {
+        window.WebSocket = window.MozWebSocket;
+    }
+    if (window.WebSocket) {
+        socket = new WebSocket("ws://localhost:8083/websocket/?request=eyJpZCI6MSwicmlkIjoyNiwidG9rZW4iOiI0MzYwNjgxMWM3MzA1Y2NjNmFiYjJiZTExNjU3OWJmZCJ9");
+        socket.onmessage = function (event) {
+            console.log(event.data);
+        };
+        socket.onopen = function (event) {
+            console.log("websocket opened");
+        };
+        socket.onclose = function (event) {
+            console.log("websocket closed");
+        };
+    }
+
+    function send(message) {
+        if (!window.WebSocket) {
+            return;
+        }
+        if (socket.readyState == WebSocket.OPEN) {
+            socket.send(message);
+        } else {
+            alert("The socket is not open.");
+        }
+    }
+</script>
+<form onsubmit="return false;">
+    <input type="text" aria-multiline="true" name="mainText" />
+    <input type="text" name="message" value="Hello, World! from rid=26"/>
+    <input type="button" value="Send Web Socket Data" onclick="send(this.form.message.value)"/>
+</form>
+</body>
+</html>

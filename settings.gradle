@@ -1,0 +1,4 @@
+rootProject.name = 'netty-kafka-chat'
+include 'netty-kafka-chat-server'
+include 'netty-kafka-chat-client'
+
