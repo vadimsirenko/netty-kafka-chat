@@ -65,8 +65,10 @@
         if (socket.readyState === WebSocket.OPEN) {
 
             let message = {
-                "recipient": document.getElementById("recipient").value,
-                "messageText": messageText
+                "messageType": "CHAT_MESSAGE",
+                "operationType":"CREATE",
+                "recipient_id": document.getElementById("recipient").value,
+                "messageText": messageText,
             };
 
             let messageJSON = JSON.stringify(message);

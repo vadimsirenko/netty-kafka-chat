@@ -19,10 +19,9 @@ public final class WebSocketServer {
 
         try {
             ServerBootstrap b = new ServerBootstrap().group(bossGroup, workerGroup)
-                                                     .channel(NioServerSocketChannel.class)
-                                                     .handler(new LoggingHandler(LogLevel.INFO))
-                                                     .childHandler(new WebSocketServerInitializer());
-
+                    .channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new WebSocketServerInitializer());
             Channel ch = b.bind(ServerProperty.PORT).sync().channel();
             ch.closeFuture().sync();
         } finally {

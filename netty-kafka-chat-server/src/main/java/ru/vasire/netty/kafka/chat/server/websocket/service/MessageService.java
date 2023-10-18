@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.vasire.netty.kafka.chat.server.websocket.dto.MessageDto;
+import ru.vasire.netty.kafka.chat.server.websocket.dto.ChatMessageDto;
 import ru.vasire.netty.kafka.chat.server.websocket.dto.ResponseDto;
 import ru.vasire.netty.kafka.chat.server.websocket.entity.Client;
 import ru.vasire.netty.kafka.chat.server.websocket.entity.Message;
@@ -16,14 +16,14 @@ public final class MessageService {
         ResponseDto res = new ResponseDto();
         res.getData().put("sender", client.getName());
         res.getData().put("message", message.getMessageText());
-        res.getData().put("recipient", message.getRecipient());
+        res.getData().put("recipient", ChatEngineService.getClientName(message.getRecipientId()));
         res.getData().put("ts", System.currentTimeMillis());
         return res;
     }
 
     public static Message messageEncode(Client client, String requestJson) {
         try {
-            MessageDto messageDto = new ObjectMapper().readValue(requestJson, MessageDto.class);
+            ChatMessageDto messageDto = new ObjectMapper().readValue(requestJson, ChatMessageDto.class);
 
             if (!validateMessage(messageDto))
                 throw new RuntimeException("Message is not valid");
@@ -32,10 +32,12 @@ public final class MessageService {
 
             if (messageDto.getMessageText() != null)
                 message.setMessageText(messageDto.getMessageText());
-            if (messageDto.getRecipient() != null)
-                message.setRecipient(messageDto.getRecipient());
+            if (messageDto.getRecipientId() != null)
+                message.setRecipientId(messageDto.getRecipientId());
             if (client.getName() != null)
-                message.setSender(client.getName());
+                message.setSenderId(client.getId());
+            if (client.getChatId() != 0)
+                message.setChatId(client.getChatId());
             return message;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -47,7 +49,7 @@ public final class MessageService {
      * @param messageDto
      * @return
      */
-    private static boolean validateMessage(MessageDto messageDto) {
+    private static boolean validateMessage(ChatMessageDto messageDto) {
         return true;
     }
 }

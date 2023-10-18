@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MessageDto {
-    private String recipient;
-    private String messageText;
+public class RequestDto {
+    private MessageType messageType;
+    private OperationType operationType;
 }

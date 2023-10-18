@@ -6,7 +6,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Message {
-    private String sender;
-    private String recipient;
+    private Long senderId;
+    private Long recipientId;
+    private Long chatId;
     private String messageText;
 }

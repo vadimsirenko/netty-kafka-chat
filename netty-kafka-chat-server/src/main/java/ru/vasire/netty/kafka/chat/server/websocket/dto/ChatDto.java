@@ -6,10 +6,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ClientDto extends RequestDto {
-    private Long id;
-    private String name;
+public class ChatDto extends RequestDto {
     @JsonProperty("chat_id")
     private Long chatId;
-    private String token;
+    @JsonProperty("chat_name")
+    private String chatName;
 }

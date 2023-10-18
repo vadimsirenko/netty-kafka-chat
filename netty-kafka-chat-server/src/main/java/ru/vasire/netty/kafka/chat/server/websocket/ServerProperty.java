@@ -13,10 +13,11 @@ public class ServerProperty {
         try {
             final InputStream in = ServerProperty.class.getClassLoader().getResourceAsStream("app.properties");
             prop.load(in);
+            assert in != null;
             in.close();
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        PORT = Integer.valueOf(prop.getProperty("port"));
+        PORT = Integer.parseInt(prop.getProperty("port"));
     }
 }
