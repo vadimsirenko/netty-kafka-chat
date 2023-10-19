@@ -4,9 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum MessageType {
     @JsonProperty("MESSAGE")
-    CHAT_MESSAGE,
+    MESSAGE,
     @JsonProperty("ROOM")
-    CHAT,
+    ROOM,
     @JsonProperty("CLIENT")
-    CLIENT
+    CLIENT,
+    @JsonProperty("INFO")
+    INFO,
+    @JsonProperty("ERROR")
+    ERROR
 }

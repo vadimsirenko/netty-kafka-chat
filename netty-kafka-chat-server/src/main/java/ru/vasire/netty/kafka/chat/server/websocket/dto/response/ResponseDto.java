@@ -3,24 +3,29 @@ package ru.vasire.netty.kafka.chat.server.websocket.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import ru.vasire.netty.kafka.chat.server.websocket.dto.MessageType;
+import ru.vasire.netty.kafka.chat.server.websocket.dto.OperationType;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ResponseDto {
-
-    private Integer errorCode;
-    private String errorMessage;
+    private final Integer errorCode;
+    private final OperationType operationType;
+    private final MessageType messageType;
+    private final String errorMessage;
     private final Map<String, Object> data = new HashMap<>();
 
-    public ResponseDto(int errorCode, String errorMessage) {
+    public ResponseDto(int errorCode, String errorMessage, MessageType messageType, OperationType operationType) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
+        this.operationType = operationType;
+        this.messageType = messageType;
     }
 
 }

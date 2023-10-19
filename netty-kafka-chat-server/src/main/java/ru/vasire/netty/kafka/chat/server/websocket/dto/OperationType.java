@@ -8,5 +8,7 @@ public enum OperationType {
     @JsonProperty("UPDATE")
     UPDATE,
     @JsonProperty("DELETE")
-    DELETE
+    DELETE,
+    @JsonProperty("NONE")
+    NONE
 }

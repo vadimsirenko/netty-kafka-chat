@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
-public class ChatMessageDto extends RequestDto {
-    @JsonProperty("recipient_id")
-    private Long recipientId;
-    private String messageText;
-
+public class RequestRoomDto extends RequestDto {
+    private UUID id;
+    private String name;
 }

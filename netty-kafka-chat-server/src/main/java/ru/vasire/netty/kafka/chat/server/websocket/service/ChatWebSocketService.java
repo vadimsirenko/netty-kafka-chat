@@ -6,6 +6,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.websocketx.*;
+import ru.vasire.netty.kafka.chat.server.websocket.dto.request.RequestDto;
+import ru.vasire.netty.kafka.chat.server.websocket.dto.response.ErrorDto;
 import ru.vasire.netty.kafka.chat.server.websocket.dto.response.ResponseDto;
 import ru.vasire.netty.kafka.chat.server.websocket.entity.Client;
 import ru.vasire.netty.kafka.chat.server.websocket.entity.Message;
@@ -34,7 +36,7 @@ public class ChatWebSocketService {
 
             // After the handshake is successful, the business logic
             if (channelFuture.isSuccess()) {
-                if (client.getId() == 0) {
+                if (client.getId() == null) {
                     System.out.println(ctx.channel() + " tourist");
                 }
             }
@@ -55,27 +57,19 @@ public class ChatWebSocketService {
 
     private void broadcast(ChannelHandlerContext ctx, WebSocketFrame frame) {
         try {
-            if (client.getId() == 0) {
-                ResponseDto res = new ResponseDto(1001, "You can't chat without logging in");
+            if (client.getId() == null) {
+                ErrorDto res = new ErrorDto(1001, "You can't chat without logging in");
                 String json = new ObjectMapper().writeValueAsString(res);
                 ctx.channel().write(new TextWebSocketFrame(json));
             } else {
                 String req = ((TextWebSocketFrame) frame).text();
                 System.out.println("Received " + ctx.channel() + req);
-
-                Message message = MessageService.messageEncode(client, req);
-
-                ResponseDto res = MessageService.sendMessage(client, message);
-
-                String json = new ObjectMapper().writeValueAsString(res);
-
-                ChatEngineService.getChannelToSendMessage(client, message).forEach(c->c.writeAndFlush(new TextWebSocketFrame(json)));
+                RequestProcessorService.processRequest(client, req);
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
-
 
     private static String getWebSocketLocation(HttpRequest req) {
         String location = req.headers().get(HOST) + WEBSOCKET_PATH;

@@ -47,7 +47,7 @@ public class HttpProcessorService {
 
         Client client = ClientService.clientRegister(requestParams.get(HTTP_PARAM_REQUEST).get(0));
 
-        if (client.getRoomId() == 0) {
+        if (client.getRoomId() == null) {
             System.err.println("Room is not default");
             sendHttpResponse(ctx, request, new DefaultFullHttpResponse(HTTP_1_1, NOT_FOUND), "Room is not assign");
             return null;

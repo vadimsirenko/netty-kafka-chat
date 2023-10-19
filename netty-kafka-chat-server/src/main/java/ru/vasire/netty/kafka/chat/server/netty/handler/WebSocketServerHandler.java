@@ -1,4 +1,4 @@
-package ru.vasire.netty.kafka.chat.server.websocket;
+package ru.vasire.netty.kafka.chat.server.netty.handler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;

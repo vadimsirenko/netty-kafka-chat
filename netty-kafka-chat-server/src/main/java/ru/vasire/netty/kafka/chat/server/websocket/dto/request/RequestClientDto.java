@@ -3,13 +3,15 @@ package ru.vasire.netty.kafka.chat.server.websocket.dto.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import ru.vasire.netty.kafka.chat.server.websocket.dto.request.RequestDto;
+
+import java.util.UUID;
 
 @Getter
 @Setter
-public class RoomDto extends RequestDto {
+public class RequestClientDto extends RequestDto {
+    private UUID id;
+    private String name;
     @JsonProperty("room_id")
-    private Long chatId;
-    @JsonProperty("room_name")
-    private String chatName;
+    private UUID roomId;
+    private String token;
 }

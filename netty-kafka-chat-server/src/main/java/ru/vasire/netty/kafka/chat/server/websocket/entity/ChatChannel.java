@@ -9,12 +9,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.net.SocketAddress;
+import java.util.UUID;
 
 @Setter
 @Getter
 @RequiredArgsConstructor
 public class ChatChannel implements Channel{
-    private final Long clientId;
+    private final UUID clientId;
     private final Channel channel;
 
     @Override
