@@ -14,7 +14,6 @@ public interface ClientMapper {
     @Mapping(ignore = true, target = "messageType")
     @Mapping(ignore = true, target = "operationType")
     @Mapping(ignore = true, target = "ts")
-    @Mapping(ignore = true, target = "token")
     ClientDto ClientToClientDto(Client client);
 
     Client ClientDtoToClient(ClientDto clientDto);

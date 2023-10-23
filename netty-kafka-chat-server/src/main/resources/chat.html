@@ -17,25 +17,7 @@
       <i class="fa fa-search"></i>
     </div>
     <ul class="list">
-      <li class="clearfix">
-        <img src="img/avatar-small.jpg" alt="avatar">
-        <div class="about">
-          <div class="name">Vincent Porter</div>
-          <div class="status">
-            <i class="fa fa-circle online"></i> online
-          </div>
-        </div>
-      </li>
-
-      <li class="clearfix">
-        <img src="img/avatar-small.jpg" alt="avatar">
-        <div class="about">
-          <div class="name">Aiden Chavez</div>
-          <div class="status">
-            <i class="fa fa-circle offline"></i> left 7 mins ago
-          </div>
-        </div>
-      </li>
+      <li></li>
     </ul>
   </div>
   <div class="room-set" id="chat-list">
@@ -93,7 +75,7 @@
 <script id="message-template" type="text/x-handlebars-template">
   <li class="clearfix">
     <div class="message-data align-right">
-      <span class="message-data-time" >{{time}}, Сегодня</span> &nbsp; &nbsp;
+      <span class="message-data-time" >{{time}}</span> &nbsp; &nbsp;
       <span class="message-data-name" >{{login}}</span> <i class="fa fa-circle me"></i>
     </div>
     <div class="message other-message float-right">
@@ -106,10 +88,19 @@
   <li>
     <div class="message-data">
       <span class="message-data-name"><i class="fa fa-circle online"></i> {{login}}</span>
-      <span class="message-data-time">{{time}}, Сегодня</span>
+      <span class="message-data-time">{{time}}</span>
     </div>
     <div class="message my-message">
       {{messageText}}
+    </div>
+  </li>
+</script>
+
+<script id="message-info-template" type="text/x-handlebars-template">
+  <li>
+    <div class="message-data">
+      <span class="message-data-name">{{messageText}}</span>
+      <span class="message-data-time">{{time}}</span>
     </div>
   </li>
 </script>

@@ -13,7 +13,6 @@ public interface ChatMessageMapper {
     @Mapping(ignore = true, target = "operationType")
     ChatMessageDto ChatMessageToChatMessageDto(ChatMessage chatMessage);
 
-    @Mapping(ignore = true, target = "id")
     ChatMessage ChatMessageDtoToChatMessage(ChatMessageDto chatMessageDto);
 }
 

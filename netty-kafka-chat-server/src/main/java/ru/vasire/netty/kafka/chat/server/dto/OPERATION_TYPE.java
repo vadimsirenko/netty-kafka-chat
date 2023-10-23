@@ -12,5 +12,9 @@ public enum OPERATION_TYPE {
     @JsonProperty("RECEIVE")
     RECEIVE,
     @JsonProperty("NONE")
-    NONE
+    NONE,
+    @JsonProperty("LOGOFF")
+    LOGOFF,
+    @JsonProperty("LOGON")
+    LOGON
 }

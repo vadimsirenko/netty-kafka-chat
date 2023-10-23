@@ -12,7 +12,7 @@ import ru.vasire.netty.kafka.chat.server.dto.RoomListDto;
 import ru.vasire.netty.kafka.chat.server.entity.Client;
 import ru.vasire.netty.kafka.chat.server.entity.Room;
 import ru.vasire.netty.kafka.chat.server.mapper.RoomMapper;
-import ru.vasire.netty.kafka.chat.server.service.ChatEngineService;
+import ru.vasire.netty.kafka.chat.server.repository.RoomChannelRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,9 +21,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public final class RoomService {
 
-    private final ChatEngineService chatEngineService;
+    private final RoomChannelRepository roomChannelRepository;
 
-    public void processRequest(Client client, String requestJson) throws JsonProcessingException {
+     public void processRequest(String requestJson) throws JsonProcessingException {
         try {
             RoomDto roomDto = new ObjectMapper().readValue(requestJson, RoomDto.class);
             Room room = new Room();
@@ -33,11 +33,11 @@ public final class RoomService {
             if (!validateRoom(room))
                 throw new RuntimeException("ChatMessage is not valid");
 
-            boolean isFire = chatEngineService.applyRoom(roomDto.getOperationType(), room);
+           // boolean isFire = chatEngineService.applyRoom(roomDto.getOperationType(), room);
 
-            if(isFire){
+          //  if(isFire){
                 sendRoom(roomDto.getOperationType(), room);
-            }
+           // }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -47,10 +47,10 @@ public final class RoomService {
         RoomDto res = RoomMapper.INSTANCE.RoomToRoomDto(room);
         res.setOperationType(operationType);
         String json = new ObjectMapper().writeValueAsString(res);
-        chatEngineService.getChannelToSendRoom().forEach(c -> c.writeAndFlush(new TextWebSocketFrame(json)));
+        roomChannelRepository.getAllChannels().forEach(c -> c.writeAndFlush(new TextWebSocketFrame(json)));
     }
     public void sendRoomList(UUID clientId, Channel channel) throws JsonProcessingException {
-        List<Room> rooms = chatEngineService.getRoomByClientId(clientId);
+        List<Room> rooms = roomChannelRepository.getAllRoom();
         RoomListDto roomListDto = new RoomListDto(OPERATION_TYPE.UPDATE, rooms.stream().map(r-> RoomMapper.INSTANCE.RoomToRoomDto(r)).toList());
         String json = new ObjectMapper().writeValueAsString(roomListDto);
         channel.writeAndFlush(new TextWebSocketFrame(json));

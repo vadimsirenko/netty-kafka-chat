@@ -15,19 +15,19 @@ public class RequestService {
     private final MessageService messageService;
     private final RoomService roomService;
 
-    public void processRequest(Client client, String requestJson, Channel channel) throws JsonProcessingException {
+    public void processRequest(String requestJson, Channel channel) throws JsonProcessingException {
 
         BaseDto baseDto = new ObjectMapper().readValue(requestJson, BaseDto.class);
 
         switch (baseDto.getMessageType()) {
             case MESSAGE:
-                messageService.processRequest(client, requestJson);
+                messageService.processRequest(requestJson);
                 break;
             case ROOM:
-                roomService.processRequest(client, requestJson);
+                roomService.processRequest(requestJson);
                 break;
             case MESSAGE_LIST:
-                messageService.processMessageListRequest(client, requestJson, channel);
+                messageService.processMessageListRequest(requestJson, channel);
                 break;
             default: ;
         }

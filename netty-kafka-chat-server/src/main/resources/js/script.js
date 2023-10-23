@@ -1,14 +1,29 @@
 (function () {
 
-    var chat = {
+    String.prototype.interpolate = function(params) {
+        const names = Object.keys(params);
+        const vals = Object.values(params);
+        return new Function(...names, `return \`${this}\`;`)(...vals);
+    }
+
+    const logoffTemplate = 'Пользователь ${text} покинул чат';
+    const logonTemplate = 'Пользователь ${text} вошел в чат';
+    let chat = {
         messageToSend: '',
         socket: null,
         roomId: null,
         senderId: null,
+        nickName: null,
         init: function () {
             this.cacheDOM();
             this.bindEvents();
             this.loginUser();
+        },
+        uuidv4: function() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);
+            });
         },
         cacheDOM: function () {
             this.$chatHistory = $('.chat-history');
@@ -34,20 +49,18 @@
             }
         },
         chatClick: function (event) {
-            roomId = $(event.target).attr('data-id');
-            this.goToRoom(roomId);
+            this.$roomSetList.find('.chat-item').css({"font-weight": "normal","color":"white"});
+            $(event.target).css({"font-weight": "bold","color":"#E38968"});
+            this.goToRoom($(event.target).attr('data-id'));
         },
         scrollToBottom: function () {
             this.$chatHistory.scrollTop(this.$chatHistory[0].scrollHeight);
         },
-        getCurrentTime: function () {
-            return this.getFormatedTime(new Date());
-        },
         getFormatedTime: function (date) {
-            return date.toLocaleTimeString('ru-RU', {hour12: false}).replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
+            return date.toLocaleString();
         },
         loginUser: function () {
-            var username = window.prompt("Enter your username:", "");
+            let username = window.prompt("Enter your username:", "");
             if (username.toString().length > 2) {
                 this.login = username;
                 this.connectToChatServer(username);
@@ -63,12 +76,12 @@
             if (window.WebSocket) {
 
                 let config = {
-                    "name": userLogin,
+                    "login": userLogin,
                     "token": "dfgfdsgfdsgfdsgfdsgfdsg"
                 }
                 let configJSON = JSON.stringify(config);
                 // Encode the String
-                var encodedString = Base64.encode(configJSON);
+                let encodedString = Base64.encode(configJSON);
 
                 this.socket = new WebSocket("ws://localhost:8181/websocket/?request=" + encodedString);
                 this.socket.addEventListener('message', this.receiveMessage.bind(this));
@@ -94,57 +107,62 @@
                 this.processRoomList(data.operationType, data.rooms);
             }
             if (data.messageType === "CLIENT") {
-                this.processClientProfile(data.id, data.name);
+                this.processClientProfile(data.id, data.nickName);
+            }
+            if (data.messageType === "INFO") {
+                this.processInfo(data);
             }
             if (data.messageType === "MESSAGE_LIST" && data.roomId === this.roomId) {
                 this.processMessageList(data.operationType, data.messages);
             }
         },
-        processClientProfile: function (id, name) {
+        processClientProfile: function (id, nickName) {
             this.senderId = id;
+            this.nickName = nickName;
         },
         processMessage: function (message) {
-            //this.renderMessage(message);
-/*
-            var templateResponse = Handlebars.compile($("#message-response-template").html());
-            if (sender === this.login) {
-                templateResponse = Handlebars.compile($("#message-template").html());
-            }
-            var contextResponse = {
-                login: sender,
-                messageText: message,
-                time: this.getFormatedTime(new Date(ts))
-            };
-            this.$chatHistoryList.append(templateResponse(contextResponse));
-
-*/
             this.$chatHistoryList.append(this.renderedMessage(message));
             this.scrollToBottom();
         },
+        processInfo: function (info) {
+            this.$chatHistoryList.append(this.renderedInfoMessage(info));
+            this.scrollToBottom();
+        },
         renderedMessage(message){
-            var templateResponse = Handlebars.compile($("#message-response-template").html());
-            //if (message.sender === this.login) {
+            let templateResponse = Handlebars.compile($("#message-response-template").html());
             if (message.senderId === this.senderId) {
                 templateResponse = Handlebars.compile($("#message-template").html());
             }
-            var contextResponse = {
-                login: message.senderId,
+            let contextResponse = {
+                login: message.sender,
                 messageText: message.messageText,
                 time: this.getFormatedTime(new Date(message.ts))
             };
             return templateResponse(contextResponse);
         },
+        renderedInfoMessage(info){
+            infoTemplate = null;
+            if(info.operationType =="LOGON"){
+                infoTemplate = logonTemplate;
+            }
+            if(info.operationType =="LOGOFF"){
+                infoTemplate = logoffTemplate;
+            }
+            let templateResponse = Handlebars.compile($("#message-info-template").html());
+            let contextResponse = {
+                messageText: infoTemplate.interpolate({text: info.messageText}),
+                time: this.getFormatedTime(new Date(info.ts))
+            };
+            return templateResponse(contextResponse);
+        },
         processRoomList: function (operationType, rooms) {
-            var templateRoomList = Handlebars.compile($("#room-set-item-template").html());
+            let templateRoomList = Handlebars.compile($("#room-set-item-template").html());
             this.$roomSetList.empty();
             this.$roomSetList.append( templateRoomList({objects:rooms}) );
-
-            //this.goToRoom(rooms[0].id);
         },
         processMessageList: function (operationType, messages) {
-            var templateRoomList = Handlebars.compile($("#room-set-item-template").html());
             this.$chatHistoryList.empty();
-            for(var i=0;i<messages.length;i++)
+            for(let i=0;i<messages.length;i++)
             {
                 this.$chatHistoryList.append(this.renderedMessage(messages[i]));
             }
@@ -160,13 +178,14 @@
                 if (this.socket.readyState === WebSocket.OPEN) {
 
                     let message = {
+                        "id": this.uuidv4(),
                         "messageType": "MESSAGE",
                         "operationType": "CREATE",
-                        "recipient_id": null, //23,
                         "ts": new Date().getTime(),
                         "messageText": this.messageToSend,
-                        "roomId": "ae81251e-6e7e-11ee-b962-0242ac120002",
-                        "senderId": this.senderId
+                        "roomId": this.roomId,
+                        "senderId": this.senderId,
+                        "sender": this.nickName
                     };
                     let messageJSON = JSON.stringify(message);
                     this.socket.send(messageJSON);
@@ -179,8 +198,8 @@
         },
         goToRoom: function (roomId) {
             this.scrollToBottom();
-            this.roomId = roomId;
-            if (this.roomId != null) {
+            if (roomId != null && this.roomId !== roomId) {
+                this.roomId = roomId;
                 if (!window.WebSocket) {
                     return;
                 }
@@ -189,13 +208,12 @@
                     let request = {
                         "messageType": "MESSAGE_LIST",
                         "operationType": "RECEIVE",
+                        "senderId": this.senderId,
                         "ts": new Date().getTime(),
                         "roomId": roomId
                     };
                     let requestJSON = JSON.stringify(request);
                     this.socket.send(requestJSON);
-                    this.$textarea.val('');
-
                 } else {
                     alert("The socket is not open.");
                 }
@@ -205,11 +223,11 @@
 
     chat.init();
 
-    var searchFilter = {
+    let searchFilter = {
         options: {valueNames: ['name']},
         init: function () {
-            var userList = new List('people-list', this.options);
-            var noItems = $('<li id="no-items-found">No items found</li>');
+            let userList = new List('people-list', this.options);
+            let noItems = $('<li id="no-items-found">No items found</li>');
 
             userList.on('updated', function (list) {
                 if (list.matchingItems.length === 0) {
@@ -223,11 +241,11 @@
 
     searchFilter.init();
 
-    var searchRoomFilter = {
+    let searchRoomFilter = {
         options: {valueNames: ['name']},
         init: function () {
-            var chatList = new List('chat-list', this.options);
-            var noItems = $('<li id="no-items-found">No items found</li>');
+            let chatList = new List('chat-list', this.options);
+            let noItems = $('<li id="no-items-found">No items found</li>');
 
             chatList.on('updated', function (list) {
                 if (list.matchingItems.length === 0) {

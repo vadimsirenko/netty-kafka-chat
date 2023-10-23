@@ -13,6 +13,7 @@ public class MessageListDto extends BaseDto{
     @JsonProperty("messages")
     private List<ChatMessageDto> messages;
     private UUID roomId;
+    private UUID senderId;
 
     public MessageListDto(OPERATION_TYPE operationType, UUID roomId, List<ChatMessageDto> messages) {
         super(MESSAGE_TYPE.MESSAGE_LIST, operationType);

@@ -40,7 +40,7 @@ public class WebSocketHttpHandler {
         webSocketServerProcessor.handleWebSocketRequest(client, handshaker, ctx, frame);
     }
     public void handlerRemoved(ChannelHandlerContext ctx) {
-        webSocketServerProcessor.removeClient(client);
+        webSocketServerProcessor.removeClient(client, ctx.channel());
     }
 
     public WebSocketServerHandshaker createHandshaker(Client client, ChannelHandlerContext ctx, HttpRequest request) throws JsonProcessingException {

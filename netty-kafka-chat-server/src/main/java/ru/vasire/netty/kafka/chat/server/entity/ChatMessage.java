@@ -15,11 +15,10 @@ public class ChatMessage {
     private UUID id;
     @Column(name = "sender_id", nullable = false)
     private UUID senderId;
-    @Column(name = "recipient_id")
-    private UUID recipientId;
     @Column(name = "room_id", nullable = false)
     private UUID roomId;
     @Column(name = "message_text", nullable = false)
     private String messageText;
     private Long ts;
+    private String sender;
 }

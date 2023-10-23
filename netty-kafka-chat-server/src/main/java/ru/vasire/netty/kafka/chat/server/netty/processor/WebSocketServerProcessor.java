@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.vasire.netty.kafka.chat.server.dto.ErrorDto;
 import ru.vasire.netty.kafka.chat.server.entity.Client;
-import ru.vasire.netty.kafka.chat.server.service.ChatEngineService;
+import ru.vasire.netty.kafka.chat.server.repository.RoomChannelRepository;
 import ru.vasire.netty.kafka.chat.server.service.message.ClientService;
 import ru.vasire.netty.kafka.chat.server.service.message.RequestService;
 
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
 import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -32,7 +32,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 public class WebSocketServerProcessor {
     private static final String HTTP_PARAM_REQUEST = "request";
     private final RequestService requestService;
-    private final ChatEngineService chatEngineService;
+    private final ClientService clientService;
     public Optional<Client> processHttpRequest(ChannelHandlerContext ctx, HttpRequest request) {
         // Handle a bad request.
         if (!request.decoderResult().isSuccess()) {
@@ -58,7 +58,7 @@ public class WebSocketServerProcessor {
             sendHttpResponse(ctx, request, new DefaultFullHttpResponse(HTTP_1_1, NOT_FOUND), null);
             return Optional.empty();
         }
-        Client client = ClientService.clientRegister(requestParams.get(HTTP_PARAM_REQUEST).get(0));
+        Client client = clientService.clientRegister(requestParams.get(HTTP_PARAM_REQUEST).get(0));
 /*
         if (client.getRoomId() == null) {
             System.err.println("Room is not default");
@@ -67,7 +67,7 @@ public class WebSocketServerProcessor {
         }
 
  */
-        chatEngineService.addClient(client, ctx.channel());
+        client = clientService.clientRegister(client);
         return Optional.of(client);
     }
     public void handleWebSocketRequest(Client client, WebSocketServerHandshaker handshaker, ChannelHandlerContext ctx, WebSocketFrame frame) {
@@ -90,7 +90,7 @@ public class WebSocketServerProcessor {
             } else {
                 String req = ((TextWebSocketFrame) frame).text();
                 System.out.println("Received " + ctx.channel() + req);
-                requestService.processRequest(client, req, ctx.channel());
+                requestService.processRequest(req, ctx.channel());
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -109,7 +109,9 @@ public class WebSocketServerProcessor {
             f.addListener(ChannelFutureListener.CLOSE);
         }
     }
-    public void removeClient(Client client) {
-        chatEngineService.removeClient(client);
+    public void removeClient(Client client, Channel channel) {
+        if (client != null) {
+            clientService.removeProfile(client.getId(), channel);
+        }
     }
 }

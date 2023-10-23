@@ -9,15 +9,14 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ChatMessageDto extends BaseDto {
-    @JsonProperty("recipient_id")
-    private UUID recipientId;
+    private UUID id;
     private String messageText;
     private UUID senderId;
     private UUID roomId;
+    private String sender;
 
-    public ChatMessageDto(OPERATION_TYPE operationType, UUID roomId, UUID senderId, UUID recipientId, String messageText) {
+    public ChatMessageDto(OPERATION_TYPE operationType, UUID roomId, UUID senderId, String messageText) {
         super(MESSAGE_TYPE.MESSAGE, operationType);
-        this.recipientId = recipientId;
         this.messageText = messageText;
         this.roomId = roomId;
         this.senderId = senderId;
