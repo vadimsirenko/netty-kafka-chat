@@ -14,6 +14,7 @@
         roomId: null,
         senderId: null,
         nickName: null,
+        messagesLength: 0,
         init: function () {
             this.cacheDOM();
             this.bindEvents();
@@ -30,6 +31,8 @@
             this.$roomSet = $('.room-set');
             this.$button = $('button');
             this.$textarea = $('#message-to-send');
+            this.$chatTitle = $('.chat-with');
+            this.$chatCountTitle = $('.chat-num-messages');
             this.$chatHistoryList = this.$chatHistory.find('ul');
             this.$roomSetList = this.$roomSet.find('ul');
         },
@@ -52,6 +55,7 @@
             this.$roomSetList.find('.chat-item').css({"font-weight": "normal","color":"white"});
             $(event.target).css({"font-weight": "bold","color":"#E38968"});
             this.goToRoom($(event.target).attr('data-id'));
+            this.$chatTitle.text($(event.target).text());
         },
         scrollToBottom: function () {
             this.$chatHistory.scrollTop(this.$chatHistory[0].scrollHeight);
@@ -121,6 +125,8 @@
             this.nickName = nickName;
         },
         processMessage: function (message) {
+            this.messagesLength = this.messagesLength + 1;
+            this.updateRoomStatistic();
             this.$chatHistoryList.append(this.renderedMessage(message));
             this.scrollToBottom();
         },
@@ -162,11 +168,16 @@
         },
         processMessageList: function (operationType, messages) {
             this.$chatHistoryList.empty();
+            this.messagesLength = messages.length;
+            this.updateRoomStatistic();
             for(let i=0;i<messages.length;i++)
             {
                 this.$chatHistoryList.append(this.renderedMessage(messages[i]));
             }
             this.$chatHistory.scrollTop(this.$chatHistory[0].scrollHeight);
+        },
+        updateRoomStatistic: function () {
+            this.$chatCountTitle.text("уже " + this.messagesLength + " сообщений");
         },
         sendMessage: function () {
             this.scrollToBottom();

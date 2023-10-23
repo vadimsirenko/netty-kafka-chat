@@ -11,25 +11,20 @@ body {
 
 .container {
     margin: 0 auto;
-    /*width: 750px;*/
-    width: 1010px;
+    width: 750px;
     background: #444753;
     border-radius: 5px;
 }
 
 .room-set {
     width: 260px;
-    float: right;
-}
-
-.people-list {
-    width: 260px;
     float: left;
 }
-.people-list .search, .room-set .search {
+
+.room-set .search {
     padding: 20px;
 }
-.people-list input, .room-set input {
+.room-set input {
     border-radius: 3px;
     border: none;
     padding: 14px;
@@ -38,31 +33,17 @@ body {
     width: 90%;
     font-size: 14px;
 }
-.people-list .fa-search, .room-set .fa-search {
+.room-set .fa-search {
     position: relative;
     left: -25px;
 }
-.people-list ul, .room-set ul{
+.room-set ul{
     padding: 20px;
     height: 770px;
 }
-.people-list ul li, .room-set ul li {
+.room-set ul li {
     padding-bottom: 20px;
 }
-.people-list img {
-    float: left;
-}
-.people-list .about {
-    float: left;
-    margin-top: 8px;
-}
-.people-list .about {
-    padding-left: 8px;
-}
-.people-list .status {
-    color: #92959E;
-}
-
 .chat {
     width: 490px;
     float: left;
@@ -72,7 +53,7 @@ body {
     color: #434651;
 }
 .chat .chat-header {
-    padding: 20px;
+    padding: 10px;
     border-bottom: 2px solid white;
 }
 .chat .chat-header img {
@@ -110,10 +91,10 @@ body {
     padding-left: 6px;
 }
 .chat .chat-history .message {
-    color: white;
+    color: #16436d;/* white; */
     padding: 18px 20px;
     line-height: 26px;
-    font-size: 16px;
+    font-size: 14px;
     border-radius: 7px;
     margin-bottom: 30px;
     width: 90%;
