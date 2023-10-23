@@ -1,0 +1,30 @@
+server:
+  port: 8181
+  boss:
+    thread:
+      count: 2
+  worker:
+    thread:
+      count: 2
+  so:
+    keepalive: true
+    backlog: 100
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/chatDB
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: P@ssw0rd
+  flyway:
+    enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure: ERROR

@@ -22,12 +22,12 @@
         };
     }
 
-    function send(message) {
+    function send(chatMessage) {
         if (!window.WebSocket) {
             return;
         }
         if (socket.readyState == WebSocket.OPEN) {
-            socket.send(message);
+            socket.send(chatMessage);
         } else {
             alert("The socket is not open.");
         }
@@ -35,8 +35,8 @@
 </script>
 <form onsubmit="return false;">
     <input type="text" aria-multiline="true" name="mainText" />
-    <input type="text" name="message" value="Hello, World! from rid=26"/>
-    <input type="button" value="Send Web Socket Data" onclick="send(this.form.message.value)"/>
+    <input type="text" name="chatMessage" value="Hello, World! from rid=26"/>
+    <input type="button" value="Send Web Socket Data" onclick="send(this.form.chatMessage.value)"/>
 </form>
 </body>
 </html>

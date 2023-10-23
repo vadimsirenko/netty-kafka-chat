@@ -3,26 +3,18 @@ package ru.vasire.netty.kafka.chat.server.netty;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import jakarta.annotation.PreDestroy;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
 
 @Component
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class TCPServer {
 
-    @Autowired
-    @Qualifier("serverBootstrap")
-    private ServerBootstrap serverBootstrap;
+    private final ServerBootstrap serverBootstrap;
 
-    @Autowired
-    @Qualifier("tcpSocketAddress")
-    private InetSocketAddress tcpPort;
-
+    private final InetSocketAddress tcpPort;
     private Channel serverChannel;
 
     public void start() throws Exception {
@@ -31,23 +23,9 @@ public class TCPServer {
 
     @PreDestroy
     public void stop() throws Exception {
-        serverChannel.close();
-        serverChannel.parent().close();
-    }
-
-    public ServerBootstrap getServerBootstrap() {
-        return serverBootstrap;
-    }
-
-    public void setServerBootstrap(ServerBootstrap serverBootstrap) {
-        this.serverBootstrap = serverBootstrap;
-    }
-
-    public InetSocketAddress getTcpPort() {
-        return tcpPort;
-    }
-
-    public void setTcpPort(InetSocketAddress tcpPort) {
-        this.tcpPort = tcpPort;
+        if(serverChannel != null && serverChannel.isOpen()) {
+            serverChannel.close();
+            serverChannel.parent().close();
+        }
     }
 }

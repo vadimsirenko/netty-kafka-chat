@@ -1,23 +1,30 @@
 package ru.vasire.netty.kafka.chat.server.netty.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import ru.vasire.netty.kafka.chat.server.websocket.service.ChatWebSocketService;
-import ru.vasire.netty.kafka.chat.server.websocket.service.HttpProcessorService;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import ru.vasire.netty.kafka.chat.server.entity.Client;
 
+@Component
+@RequiredArgsConstructor
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
-    private ChatWebSocketService chatWebSocketService;
+    private final WebSocketHttpHandler webSocketHttpHandler;
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, Object msg) {
+    public void channelRead0(ChannelHandlerContext ctx, Object msg) throws JsonProcessingException {
         if (msg instanceof HttpRequest)
-            chatWebSocketService = HttpProcessorService.processRequest(ctx, (HttpRequest) msg);
+            webSocketHttpHandler.processHttpRequest(ctx, (HttpRequest) msg);
         else if (msg instanceof WebSocketFrame)
-            chatWebSocketService.handleWebSocketFrame(ctx, (WebSocketFrame) msg);
+            webSocketHttpHandler.processWebSocketRequest(ctx, (WebSocketFrame) msg);
         else
             System.err.println("Unknown request type: " + msg.getClass().getName());
     }
@@ -42,6 +49,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        chatWebSocketService.handlerRemoved(ctx);
+        webSocketHttpHandler.handlerRemoved(ctx);
     }
 }

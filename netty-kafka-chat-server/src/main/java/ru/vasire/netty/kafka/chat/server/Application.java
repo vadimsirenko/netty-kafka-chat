@@ -6,16 +6,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.*;
-import ru.vasire.netty.kafka.chat.server.netty.ChannelRepository;
+import org.springframework.context.annotation.Bean;
 import ru.vasire.netty.kafka.chat.server.netty.TCPServer;
 import ru.vasire.netty.kafka.chat.server.netty.handler.WebSocketServerInitializer;
 
@@ -25,43 +21,30 @@ import java.util.Map;
 import java.util.Set;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "ru.vasire.netty.kafka.chat.server.netty")
-@PropertySource(value= "classpath:/properties/local/nettyserver.properties")
+@RequiredArgsConstructor
 public class Application {
-
-    @Configuration
-    @Profile("production")
-    @PropertySource("classpath:/properties")
-    static class Production
-    { }
-
-    @Configuration
-    @Profile("local")
-    @PropertySource({"classpath:/properties/local/nettyserver.properties"})
-    static class Local
-    { }
-
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
         ctx.getBean(TCPServer.class).start();
     }
 
-    @Value("${tcp.port}")
+    private final WebSocketServerInitializer webSocketServerInitializer;
+
+    @Value("${server.port}")
     private int tcpPort;
 
-    @Value("${boss.thread.count}")
+    @Value("${server.boss.thread.count}")
     private int bossCount;
 
-    @Value("${worker.thread.count}")
+    @Value("${server.worker.thread.count}")
     private int workerCount;
 
-    @Value("${so.keepalive}")
+    @Value("${server.so.keepalive}")
     private boolean keepAlive;
 
-    @Value("${so.backlog}")
+    @Value("${server.so.backlog}")
     private int backlog;
 
-    @SuppressWarnings("unchecked")
     @Bean(name = "serverBootstrap")
     public ServerBootstrap bootstrap() {
         ServerBootstrap b = new ServerBootstrap();
@@ -76,10 +59,6 @@ public class Application {
         }
         return b;
     }
-
-    @Autowired
-    @Qualifier("webSocketServerInitializer")
-    private WebSocketServerInitializer webSocketServerInitializer;
 
     @Bean(name = "tcpChannelOptions")
     public Map<ChannelOption<?>, Object> tcpChannelOptions() {
@@ -102,10 +81,5 @@ public class Application {
     @Bean(name = "tcpSocketAddress")
     public InetSocketAddress tcpPort() {
         return new InetSocketAddress(tcpPort);
-    }
-
-    @Bean(name = "channelRepository")
-    public ChannelRepository channelRepository() {
-        return new ChannelRepository();
     }
 }

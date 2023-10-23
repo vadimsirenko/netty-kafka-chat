@@ -1,0 +1,24 @@
+server:
+  port: 8181
+  boss:
+    thread:
+      count: 2
+  worker:
+    thread:
+      count: 2
+  so:
+    keepalive: true
+    backlog: 100
+spring:
+  datasource:
+    url: jdbc:h2:~/h2test
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  flyway:
+    enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: validate

@@ -11,19 +11,25 @@ body {
 
 .container {
     margin: 0 auto;
-    width: 750px;
+    /*width: 750px;*/
+    width: 1010px;
     background: #444753;
     border-radius: 5px;
+}
+
+.room-set {
+    width: 260px;
+    float: right;
 }
 
 .people-list {
     width: 260px;
     float: left;
 }
-.people-list .search {
+.people-list .search, .room-set .search {
     padding: 20px;
 }
-.people-list input {
+.people-list input, .room-set input {
     border-radius: 3px;
     border: none;
     padding: 14px;
@@ -32,15 +38,15 @@ body {
     width: 90%;
     font-size: 14px;
 }
-.people-list .fa-search {
+.people-list .fa-search, .room-set .fa-search {
     position: relative;
     left: -25px;
 }
-.people-list ul {
+.people-list ul, .room-set ul{
     padding: 20px;
     height: 770px;
 }
-.people-list ul li {
+.people-list ul li, .room-set ul li {
     padding-bottom: 20px;
 }
 .people-list img {
@@ -175,7 +181,10 @@ body {
 .online {
     color: #86BB71;
 }
-
+.chats {
+    color: #94C2ED;
+    margin-right: 10px;
+}
 .offline {
     color: #E38968;
 }
