@@ -12,8 +12,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ru.vasire.netty.kafka.chat.server.netty.TCPServer;
 import ru.vasire.netty.kafka.chat.server.netty.handler.WebSocketServerInitializer;
+import ru.vasire.netty.kafka.chat.server.service.message.ClientService;
+import ru.vasire.netty.kafka.chat.server.service.message.MessageService;
+import ru.vasire.netty.kafka.chat.server.service.message.RoomService;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -22,6 +26,7 @@ import java.util.Set;
 
 @SpringBootApplication
 @RequiredArgsConstructor
+@EnableJpaRepositories(basePackages = "ru.vasire.netty.kafka.chat.server.repository")
 public class Application {
     public static void main(String[] args) throws Exception {
         ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);

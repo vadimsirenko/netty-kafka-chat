@@ -16,6 +16,7 @@ public interface ClientMapper {
     @Mapping(ignore = true, target = "ts")
     ClientDto ClientToClientDto(Client client);
 
+    @Mapping(ignore = true, target = "id")
     Client ClientDtoToClient(ClientDto clientDto);
 }
 

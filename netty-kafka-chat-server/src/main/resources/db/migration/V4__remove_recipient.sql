@@ -1,3 +1,0 @@
-ALTER TABLE IF EXISTS public.message DROP COLUMN IF EXISTS recipient_id;
-
-ALTER TABLE IF EXISTS public.message DROP COLUMN IF EXISTS recipient;

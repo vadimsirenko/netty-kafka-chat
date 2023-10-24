@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ErrorDto extends BaseDto {
+public class ErrorDto extends BaseDto implements ClientMessage {
     private final Integer errorCode;
     private final String errorMessage;
     public ErrorDto(int errorCode, String errorMessage){

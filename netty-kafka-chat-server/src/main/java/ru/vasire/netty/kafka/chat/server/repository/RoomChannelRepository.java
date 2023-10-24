@@ -1,22 +1,12 @@
 package ru.vasire.netty.kafka.chat.server.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.RequiredArgsConstructor;
-import org.h2.command.ddl.CreateTable;
 import org.springframework.stereotype.Service;
-import ru.vasire.netty.kafka.chat.server.dto.ChatMessageDto;
-import ru.vasire.netty.kafka.chat.server.dto.InfoDto;
-import ru.vasire.netty.kafka.chat.server.entity.Client;
 import ru.vasire.netty.kafka.chat.server.entity.Room;
-import ru.vasire.netty.kafka.chat.server.mapper.ChatMessageMapper;
-import ru.vasire.netty.kafka.chat.server.netty.ClientChannel;
-import ru.vasire.netty.kafka.chat.server.service.message.InfoService;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

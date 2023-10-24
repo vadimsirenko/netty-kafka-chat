@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 @Getter
 @Setter
-public class RoomListDto extends BaseDto{
+public class RoomListDto extends BaseDto implements ClientMessage{
     @JsonProperty("rooms")
     private List<RoomDto> rooms;
 

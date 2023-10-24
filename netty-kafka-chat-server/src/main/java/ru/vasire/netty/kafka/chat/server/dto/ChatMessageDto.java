@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class ChatMessageDto extends BaseDto {
+public class ChatMessageDto extends BaseDto implements RoomMessage {
     private UUID id;
     private String messageText;
     private UUID senderId;

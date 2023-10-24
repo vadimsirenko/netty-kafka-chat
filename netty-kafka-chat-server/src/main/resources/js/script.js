@@ -52,10 +52,14 @@
             }
         },
         chatClick: function (event) {
+            let roomId = $(event.target).attr('data-id')
+            if(roomId==undefined)
+                return;
             this.$roomSetList.find('.chat-item').css({"font-weight": "normal","color":"white"});
             $(event.target).css({"font-weight": "bold","color":"#E38968"});
-            this.goToRoom($(event.target).attr('data-id'));
             this.$chatTitle.text($(event.target).text());
+            console.log("roomId=" + roomId);
+            this.goToRoom(roomId);
         },
         scrollToBottom: function () {
             this.$chatHistory.scrollTop(this.$chatHistory[0].scrollHeight);
@@ -81,6 +85,7 @@
 
                 let config = {
                     "login": userLogin,
+                    "roomId": "057a7522-df71-4406-9559-844e7ce7cf4c",
                     "token": "dfgfdsgfdsgfdsgfdsgfdsg"
                 }
                 let configJSON = JSON.stringify(config);
@@ -101,19 +106,22 @@
             console.log("websocket opened");
         },
         receiveMessage: function (event) {
-            console.log(event.data);
             let data = JSON.parse(event.data);
 
             if (data.messageType === "MESSAGE") {
+                console.log(data);
                 this.processMessage(data);
             }
             if (data.messageType === "ROOM_LIST") {
+                console.log(data);
                 this.processRoomList(data.operationType, data.rooms);
             }
             if (data.messageType === "CLIENT") {
+                console.log(data);
                 this.processClientProfile(data.id, data.nickName);
             }
             if (data.messageType === "INFO") {
+                console.log(data);
                 this.processInfo(data);
             }
             if (data.messageType === "MESSAGE_LIST" && data.roomId === this.roomId) {

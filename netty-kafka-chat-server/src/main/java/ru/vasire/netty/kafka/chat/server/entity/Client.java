@@ -19,4 +19,6 @@ public class Client {
     @Column(name = "nick_name")
     private String nickName;
     private String token;
+    @Transient
+    private UUID roomId;
 }
